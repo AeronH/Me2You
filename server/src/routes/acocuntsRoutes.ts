@@ -4,7 +4,7 @@ const accountsRouter = express.Router();
 
 // gets a list of all the accounts and their basic info
 accountsRouter.get('/api/accounts', (req, res) => {
-    res.send('Get all registered Accounts');
+    res.json('Get all registered Accounts');
     // accountsController logic
 });
 

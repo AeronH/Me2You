@@ -3,12 +3,13 @@ import express from 'express';
 const postsRouter = express.Router();
 
 // Gets all of the posts.
-postsRouter.get('/api/posts', (req, res) => {
-    res.send('Get all posts');
+postsRouter.get('/api/posts/all', (req, res) => {
+    res.json('Get all posts');
 });
 
 // Gets a single post by the post id
 postsRouter.get('/api/posts/:id', (req, res) => {
+    res.json(`getting the info for post with the id ${req.params.id}`);
     // postsController logic
 });
 
@@ -24,7 +25,7 @@ postsRouter.delete('/api/posts/:id', (req, res) => {
 
 // creates a new post
 postsRouter.post('/api/posts', (req, res) => {
-    res.send('Create a new post');
+    res.json('Create a new post');
     // postsController logic
 });
 
