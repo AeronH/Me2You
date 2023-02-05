@@ -1,10 +1,10 @@
 import express from 'express';
 
-const postsRouter = express.router();
+const postsRouter = express.Router();
 
 // Gets all of the posts.
 postsRouter.get('/api/posts', (req, res) => {
-    // postsController logic
+    res.send('Get all posts');
 });
 
 // Gets a single post by the post id
@@ -24,6 +24,7 @@ postsRouter.delete('/api/posts/:id', (req, res) => {
 
 // creates a new post
 postsRouter.post('/api/posts', (req, res) => {
+    res.send('Create a new post');
     // postsController logic
 });
 

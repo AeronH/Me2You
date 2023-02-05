@@ -1,9 +1,10 @@
 import express from 'express';
 
-const accountsRouter = express.router();
+const accountsRouter = express.Router();
 
 // gets a list of all the accounts and their basic info
 accountsRouter.get('/api/accounts', (req, res) => {
+    res.send('Get all registered Accounts');
     // accountsController logic
 });
 
