@@ -1,6 +1,7 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import Post from "../utils/types";
 
-const postSchema = new mongoose.Schema({
+const postSchema: Schema = new mongoose.Schema({
     bodyText: {
         required: true,
         type: String,
@@ -21,4 +22,4 @@ const postSchema = new mongoose.Schema({
     },
 }, { timestamps: true, collection: 'Posts' });
 
-export default mongoose.model('Post', postSchema);
+export default mongoose.model<Post>('Post', postSchema);

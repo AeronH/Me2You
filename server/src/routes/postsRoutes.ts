@@ -1,6 +1,7 @@
 import express from 'express';
 import postModel from '../models/postModel';
 import uniqid from 'uniqid';
+import Post from '../utils/types';
 
 const postsRouter = express.Router();
 
@@ -24,13 +25,24 @@ postsRouter.post('/', async (req, res) => {
 });
 
 // Gets all of the posts.
-postsRouter.get('/all', (req, res) => {
-    res.json('Get all posts');
+postsRouter.get('/all', async (req, res) => {
+    try {
+        const data = await postModel.find();
+        res.status(200).json(data);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
 // Gets a single post by the post id
-postsRouter.get('/:id', (req, res) => {
-    res.json(`getting the info for post with the id ${req.params.id}`);
+postsRouter.get('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = await postModel.findById(id);
+        res.status(200).json(data);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
     // postsController logic
 });
 
@@ -40,8 +52,14 @@ postsRouter.get('/:account_id', (req, res) => {
 });
 
 // deletes a post by the posts id
-postsRouter.delete('/:id', (req, res) => {
-    // postsController logic
+postsRouter.delete('/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = await postModel.findByIdAndDelete(id);
+        res.status(200).send(`Post with the id ${data} deleted`);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
 export default postsRouter;

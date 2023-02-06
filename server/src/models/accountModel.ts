@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import Account from '../utils/types'
 
-const accountSchema = new mongoose.Schema({
+const accountSchema: Schema = new mongoose.Schema({
     username: {
         required: true, 
         type: String,
@@ -15,4 +16,4 @@ const accountSchema = new mongoose.Schema({
     }
 }, { timestamps: true, collection: 'Accounts' });
 
-export default mongoose.model('Account', accountSchema);
+export default mongoose.model<Account>('Account', accountSchema);
