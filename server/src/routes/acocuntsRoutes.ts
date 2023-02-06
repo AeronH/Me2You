@@ -1,25 +1,37 @@
 import express from 'express';
+import accountModel from '../models/accountModel';
 
 const accountsRouter = express.Router();
 
 // gets a list of all the accounts and their basic info
-accountsRouter.get('/api/accounts', (req, res) => {
+accountsRouter.get('/', (req, res) => {
     res.json('Get all registered Accounts');
     // accountsController logic
 });
 
 // gets the indepth info for a single account
-accountsRouter.get('/api/accounts/:account_id', (req, res) => {
+accountsRouter.get('/:account_id', (req, res) => {
     // accountsController logic
 });
 
 // creates a new user
-accountsRouter.post('/api/accounts', (req, res) => {
-    // accountsController logic
+accountsRouter.post('/', async (req, res) => {
+    const user = new accountModel({
+        username: req.body.username,
+        bio: req.body.bio,
+        avatarImage: req.body.avatarImage || null,
+    });
+
+    try {
+        const dataToSave = await user.save();
+        res.status(200).json(dataToSave);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
+    }
 });
 
 // deletes an account
-accountsRouter.delete('/api/accounts/:account_id', (req, res) => {
+accountsRouter.delete('/:account_id', (req, res) => {
     // accountsController logic
 });
 

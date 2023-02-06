@@ -4,8 +4,8 @@ import postsRouter from "./postsRoutes";
 
 const mainRouter = express.Router();
 
-mainRouter.use(accountsRouter);
-mainRouter.use(postsRouter);
+mainRouter.use('/accounts', accountsRouter);
+mainRouter.use('/posts', postsRouter);
 
 export default mainRouter;
 
