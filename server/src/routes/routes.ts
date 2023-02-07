@@ -1,5 +1,5 @@
 import express from 'express';
-import accountsRouter from "./acocuntsRoutes";
+import accountsRouter from "./accountsRoutes";
 import postsRouter from "./postsRoutes";
 
 const mainRouter = express.Router();
