@@ -1,11 +1,10 @@
 import express from 'express';
-import { createNewAccount, getAllAccounts } from '../controllers/accountsController';
-import accountModel from '../models/accountModel';
+import accountsController from '../controllers/accounts.controller';
 
 const accountsRouter = express.Router();
 
 // gets a list of all the accounts and their basic info
-accountsRouter.get('/all', getAllAccounts);
+accountsRouter.get('/all', accountsController.getAllAccounts);
 
 // gets the indepth info for a single account
 accountsRouter.get('/:account_id', (req, res) => {
@@ -13,7 +12,7 @@ accountsRouter.get('/:account_id', (req, res) => {
 });
 
 // creates a new user
-accountsRouter.post('/create', createNewAccount);
+accountsRouter.post('/create', accountsController.createNewAccount);
 
 // deletes an account
 accountsRouter.delete('/:account_id', (req, res) => {

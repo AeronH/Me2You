@@ -1,7 +1,8 @@
 import express from "express";
 import accountModel from "../models/accountModel";
 
-export async function getAllAccounts(req: express.Request, res: express.Response) {
+// returns all the current registered accounts
+async function getAllAccounts(req: express.Request, res: express.Response) {
     try {
         const data = await accountModel.find();
         res.status(200).json(data);
@@ -10,7 +11,8 @@ export async function getAllAccounts(req: express.Request, res: express.Response
     }
 }
 
-export async function createNewAccount(req: express.Request, res: express.Response) {
+// creates a new account
+async function createNewAccount(req: express.Request, res: express.Response) {
     const username = req.body.username;
     const bio = req.body.bio;
     const avatarImage = req.body.avatarImage || null;
@@ -24,3 +26,4 @@ export async function createNewAccount(req: express.Request, res: express.Respon
     }
 }
 
+export default { getAllAccounts, createNewAccount }

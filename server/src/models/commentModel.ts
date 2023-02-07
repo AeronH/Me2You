@@ -19,6 +19,10 @@ const commentSchema = new mongoose.Schema({
         required: true,
         type: Number,
     },
+    postId: {
+        required: true,
+        type: String,
+    }
 }, { timestamps: true, collection: 'Comments' });
 
 export default mongoose.model('Comment', commentSchema);
