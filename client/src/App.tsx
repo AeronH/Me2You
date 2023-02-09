@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Post } from './utils/types';
 import reactLogo from './assets/react.svg'
 import axios from 'axios';
 import './App.css'
@@ -7,7 +8,7 @@ function App() {
   const [username, setUsername] = useState('');
   const [newPost, setNewPost] = useState('');
 
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   async function getPosts() {
     try {
@@ -20,7 +21,7 @@ function App() {
     }
   }
 
-  async function onSubmitPost(e) {
+  async function onSubmitPost(e: any) {
     e.preventDefault();
     try {
       await axios.post('http://localhost:3080/api/posts', {
@@ -45,7 +46,7 @@ function App() {
       <h1>{username} + {newPost}</h1>
       <ul>
         {posts.map((post) => {
-          return <p>{post.bodyText}</p>
+          return <p key={post.id}>{post.bodyText}</p>
         })}
       </ul>
     </div>
