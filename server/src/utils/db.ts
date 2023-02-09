@@ -14,4 +14,6 @@ export function connectToMongoDB() {
     database.once('connected', () => {
         console.log('Successfully connected to Database');
     })
+
+    return database;
 }

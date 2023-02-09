@@ -1,7 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
-import Account from '../utils/types'
+import mongoose from 'mongoose';
 
-const accountSchema: Schema = new mongoose.Schema({
+const accountSchema = new mongoose.Schema({
     username: {
         required: true, 
         type: String,
@@ -13,7 +12,17 @@ const accountSchema: Schema = new mongoose.Schema({
     avatarImage: {
         required: false,
         type: String,
+    },
+    password: {
+        required: true,
+        type: String,
     }
 }, { timestamps: true, collection: 'Accounts' });
 
-export default mongoose.model<Account>('Account', accountSchema);
+accountSchema.set('toJSON', {
+    virtuals: true,
+    versionKey:false,
+    transform: function (doc, ret) {   delete ret._id  }
+  });
+
+export default mongoose.model('Account', accountSchema);

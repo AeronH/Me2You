@@ -1,6 +1,6 @@
 import { Document } from "mongoose"
 
-export default interface Post extends Document {
+export default interface Post {
     bodyText: string,
     createdBy: {
         accountId: string,
@@ -9,9 +9,9 @@ export default interface Post extends Document {
     likes: number,
 }
 
-export default interface Account extends Document {
+export default interface Account {
     username: string,
     bio: string,
-    avatarImage: string
+    avatarImage: string,
+    password: string,
 }
-

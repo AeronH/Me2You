@@ -14,9 +14,4 @@ accountsRouter.get('/:account_id', (req, res) => {
 // creates a new user
 accountsRouter.post('/create', accountsController.createNewAccount);
 
-// deletes an account
-accountsRouter.delete('/:account_id', (req, res) => {
-    // accountsController logic
-});
-
 export default accountsRouter;

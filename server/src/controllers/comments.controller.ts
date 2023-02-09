@@ -3,18 +3,15 @@ import commentModel from '../models/commentModel';
 import uniqid from 'uniqid';
 
 // gets all the comments for a post
-async function getAllComments(req: express.Request, res: express.Response) {
-    try {
-        const postId = req.body.postId;
-        const data = await commentModel.find({ postId });
-        res.status(200).json(data);
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
+async function getAllComments(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const postId = req.body.postId;
+
+    const data = await commentModel.find({ postId }).catch(next);
+    res.status(200).json(data);
 }
 
 // creates a comment for a post by id
-async function saveComment(req: express.Request, res: express.Response) {
+async function saveComment(req: express.Request, res: express.Response, next: express.NextFunction) {
     const postId = req.body.postId;
     const commentBody = req.body.commentBody;
     const username = req.body.username;
@@ -29,23 +26,16 @@ async function saveComment(req: express.Request, res: express.Response) {
         postId: postId,
     });
 
-    try {
-        await comment.save();
-        res.status(200).send(`Comment saved to post ${postId}`);
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
-    }
+    await comment.save().catch(next);
+    res.status(200).send(`Comment saved to post ${postId}`);
 }
 
 // updates the 'likes' value of a comment (Increments by 1)
-async function likeComment(req: express.Request, res: express.Response) {
+async function likeComment(req: express.Request, res: express.Response, next: express.NextFunction) {
     const commentId = req.body.commentId;
-     try {
-        await commentModel.findByIdAndUpdate(commentId, {$inc : { 'likes' : 1 }});
-        res.status(200).send(`Successfully liked post with id ${commentId}`);
-     } catch (error: any) {
-        res.status(400).json({ message: error.message });
-     }
+ 
+    await commentModel.findByIdAndUpdate(commentId, {$inc : { 'likes' : 1 }}).catch(next);
+    res.status(200).send(`Successfully liked post with id ${commentId}`);
 }
 
 export default { getAllComments, saveComment, likeComment }

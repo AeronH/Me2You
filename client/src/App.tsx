@@ -1,32 +1,53 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
+import axios from 'axios';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [username, setUsername] = useState('');
+  const [newPost, setNewPost] = useState('');
 
+  const [posts, setPosts] = useState([]);
+
+  async function getPosts() {
+    try {
+      const response = await axios.get('http://localhost:3080/api/posts/all');
+      setPosts(response.data);
+
+      console.log(response.data);
+    } catch {
+      // do nothing
+    }
+  }
+
+  async function onSubmitPost(e) {
+    e.preventDefault();
+    try {
+      await axios.post('http://localhost:3080/api/posts', {
+        bodyText: newPost,
+        username: username,
+      })
+    } catch {
+      // do nothing
+    }
+  }
+
+  useEffect(() => {
+    getPosts();
+  }, [])
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div className="App" onSubmit={onSubmitPost}>
+      <form action="submit">
+        <input type="text" placeholder="Post" onChange={(e) => setNewPost(e.target.value)}/>
+        <input type="text"  placeholder="Username" onChange={(e) => setUsername(e.target.value)}/>
+        <button type='submit'>Login</button>
+      </form>
+      <h1>{username} + {newPost}</h1>
+      <ul>
+        {posts.map((post) => {
+          return <p>{post.bodyText}</p>
+        })}
+      </ul>
     </div>
   )
 }
