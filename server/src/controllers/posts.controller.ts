@@ -20,7 +20,10 @@ async function createPost(req: express.Request, res: express.Response, next: exp
 // Gets all posts from the mongodB Posts Collection
 async function getAllPosts(req: express.Request, res: express.Response, next: express.NextFunction) {
     const data = await postModel.find().catch(next);
-    res.status(200).json(data);
+    res.status(200).json({
+        message: 'successfully retrieved all posts',
+        data: data,
+    });
 }
 
 // gets a single post by the postId

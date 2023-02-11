@@ -11,7 +11,4 @@ accountsRouter.get('/:account_id', (req, res) => {
     // accountsController logic
 });
 
-// creates a new user
-accountsRouter.post('/create', accountsController.createNewAccount);
-
 export default accountsRouter;
