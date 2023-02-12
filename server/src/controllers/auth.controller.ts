@@ -45,7 +45,7 @@ export async function signUp(req: express.Request, res: express.Response, next: 
     }
 
     const newUser = new accountModel({ username, password });
-    await newUser.save();
+    await newUser.save().catch(next);
 
     const token = generateToken({ 
         username: newUser.username,
