@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export function connectToMongoDB() {
+function connectToMongoDB() {
     const mongoString = process.env.DB_CONNECTION_STRING as string;
 
     mongoose.set('strictQuery', false);
@@ -17,3 +17,5 @@ export function connectToMongoDB() {
 
     return database;
 }
+
+export default { connectToMongoDB }

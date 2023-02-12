@@ -1,6 +1,6 @@
 // import { config } from 'dotenv';
 import express from 'express';
-import { connectToMongoDB } from './utils/db';
+import dbService from './services/db.service';
 import bodyParser from 'body-parser'
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -17,7 +17,7 @@ const app = express();
 const port = process.env.PORT;
 
 function startServer() {
-    connectToMongoDB();
+    dbService.connectToMongoDB();
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
