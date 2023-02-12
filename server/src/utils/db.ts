@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
 export function connectToMongoDB() {
-    const mongoString = process.env.DB_CONNECTION_STRING;
+    const mongoString = process.env.DB_CONNECTION_STRING as string;
 
     mongoose.set('strictQuery', false);
-    if (mongoString) mongoose.connect(mongoString);
+    mongoose.connect(mongoString);
     const database = mongoose.connection;
 
     database.on('error', (error) => {

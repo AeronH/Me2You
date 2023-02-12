@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import express from 'express';
 import accountModel from '../models/accountModel';
+import { generateToken } from '../utils/authToken'
 
 export async function login(req: express.Request, res: express.Response, next: express.NextFunction) {
     const { username, password } = req.body;
@@ -13,11 +14,10 @@ export async function login(req: express.Request, res: express.Response, next: e
         return next(error);
     }
 
-    const token = jwt.sign(
-        { username, password }, 
-        'abc123', 
-        { expiresIn: "15m" }
-    );
+    const token = generateToken({ 
+        username: existingUser.username,
+        accountId: existingUser.id,
+     });
 
     res.cookie("token", token, {
         httpOnly: true,
@@ -47,11 +47,10 @@ export async function signUp(req: express.Request, res: express.Response, next: 
     const newUser = new accountModel({ username, password });
     await newUser.save();
 
-    const token = jwt.sign(
-        { username, password }, 
-        'abc123', 
-        { expiresIn: "1h" }
-    );
+    const token = generateToken({ 
+        username: newUser.username,
+        accountId: newUser.id,
+     });
 
     res.cookie("token", token, {
         httpOnly: true,

@@ -7,8 +7,6 @@ const accountsRouter = express.Router();
 accountsRouter.get('/all', accountsController.getAllAccounts);
 
 // gets the indepth info for a single account
-accountsRouter.get('/:account_id', (req, res) => {
-    // accountsController logic
-});
+accountsRouter.get('/single', accountsController.getSingleAccount);
 
 export default accountsRouter;

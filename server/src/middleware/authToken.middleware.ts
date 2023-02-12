@@ -5,18 +5,15 @@ async function validateToken(req: express.Request, res: express.Response, next: 
     const token = req.cookies.token;
 
     if (!token) {
-        const error = new Error('Auth Token not provided!');
-        next(error);
+       return res.status(401).json({ message: 'Auth Token not present'});
     }
 
     try {
-        const user = jwt.verify(token, 'abc123');
+        const user = jwt.verify(token, process.env.JWT_SECRET as string);
         // req.User = user;
         next();
     } catch (error) {
-        res.clearCookie('token');
-        const authError = new Error('Auth Token not validated!');
-        next(authError)
+        res.clearCookie('token').json({ message: 'Auth Token not validated!'});
     }
 }   
 
