@@ -57,6 +57,11 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
 export async function signUp(req: Request, res: Response, next: NextFunction) {
     const { username, password, confirmPassword } = req.body;
 
+    if (!username || !password) {
+        const error = new Error("Some input fields are empty, please fill out all fields.");
+        return next(error);
+    }
+
     const existingUser = await accountModel.findOne({ username }).catch(next);
 
     if(existingUser) {
@@ -69,35 +74,34 @@ export async function signUp(req: Request, res: Response, next: NextFunction) {
         return next(error);
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 10).catch(next);
+    const hashedPassword = await bcrypt.hash(password, 10).catch(next);
 
     const newUser = new accountModel({ 
         username, 
-        password: encryptedPassword,
+        password: hashedPassword,
      });
      
     await newUser.save().catch(next);
 
-    const accessToken = authTokenService.generateAccessToken({ 
-        username: newUser.username,
-        accountId: newUser.id,
-     });
+    // const accessToken = authTokenService.generateAccessToken({ 
+    //     username: newUser.username,
+    //     accountId: newUser.id,
+    // });
 
-    const refreshToken = authTokenService.generateRefreshToken({
-        username: newUser.username,
-        accountId: newUser.id,
-    });
+    // const refreshToken = authTokenService.generateRefreshToken({
+    //     username: newUser.username,
+    //     accountId: newUser.id,
+    // });
 
-    await accountModel.findByIdAndUpdate(newUser.id, { refreshToken }).catch(next);
+    // await accountModel.findByIdAndUpdate(newUser.id, { refreshToken }).catch(next);
 
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-    });
+    // res.cookie("refreshToken", refreshToken, {
+    //     httpOnly: true,
+    //     maxAge: 24 * 60 * 60 * 1000,
+    // });
 
     res.status(200).json({ 
-        message: 'Successfully created account!',
-        accessToken,
+        message: `Successfully created the account ${username}!`,
     });
 }
 

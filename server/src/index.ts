@@ -1,14 +1,14 @@
 // import { config } from 'dotenv';
 import express, { Request, Response } from 'express';
 import dbService from './services/db.service';
-import bodyParser from 'body-parser'
+import bodyParser from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import mainRouter from './routes/routes';
 import path from 'path';
 import { config } from 'dotenv'
 import errorMiddleware from './middleware/error.middleware';
-import authTokenMiddleware from './middleware/authToken.middleware'
+import authTokenMiddleware from './middleware/authToken.middleware';
 import authRouter from './routes/authRoutes';
 
 config({ path: path.resolve(__dirname, '../../.env') });
@@ -21,7 +21,7 @@ function startServer() {
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(cors({ origin: '*' }))
+    app.use(cors({ origin: '*' }));
     app.use(cookieParser());
 
     app.use('/auth/', authRouter);
@@ -30,7 +30,7 @@ function startServer() {
 
     app.use('*', (req: Request, res: Response) => {
         res.status(301).redirect('/not-found');
-    })
+    });
 
     app.use(errorMiddleware.errorHandler);
     

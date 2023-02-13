@@ -1,54 +1,18 @@
-import { useState, useEffect } from 'react'
-import { Post } from './utils/types';
-import reactLogo from './assets/react.svg'
-import axios from 'axios';
 import './App.css'
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import homePage from './pages/homePage';
+import createPostPage from './pages/createPostPage';
+import postPage from './pages/postPage';
+import accountPage from './pages/accountPage';
 
 function App() {
-  const [username, setUsername] = useState('');
-  const [newPost, setNewPost] = useState('');
-
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  async function getPosts() {
-    try {
-      const response = await axios.get('http://localhost:3080/api/posts/all');
-      setPosts(response.data);
-
-      console.log(response.data);
-    } catch {
-      // do nothing
-    }
-  }
-
-  async function onSubmitPost(e: any) {
-    e.preventDefault();
-    try {
-      await axios.post('http://localhost:3080/api/posts', {
-        bodyText: newPost,
-        username: username,
-      })
-    } catch {
-      // do nothing
-    }
-  }
-
-  useEffect(() => {
-    getPosts();
-  }, [])
   return (
-    <div className="App" onSubmit={onSubmitPost}>
-      <form action="submit">
-        <input type="text" placeholder="Post" onChange={(e) => setNewPost(e.target.value)}/>
-        <input type="text"  placeholder="Username" onChange={(e) => setUsername(e.target.value)}/>
-        <button type='submit'>Login</button>
-      </form>
-      <h1>{username} + {newPost}</h1>
-      <ul>
-        {posts.map((post) => {
-          return <p key={post.id}>{post.bodyText}</p>
-        })}
-      </ul>
+    <div className="App bg-red-200 h-screen">
+      <Router>
+        <Route path="/home" component={homePage} />
+        <Route path="/post/:id" component={postPage} />
+        <Route path="/create" component={createPostPage} />
+      </Router>
     </div>
   )
 }
