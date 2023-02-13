@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import Post from "../utils/types";
+import Post from "../types/types";
 
 const postSchema: Schema = new mongoose.Schema({
     bodyText: {
@@ -19,6 +19,7 @@ const postSchema: Schema = new mongoose.Schema({
     likes: {
         required: true,
         type: Number,
+        default: 0,
     },
 }, { timestamps: true, collection: 'Posts' });
 

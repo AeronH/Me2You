@@ -8,14 +8,21 @@ const accountSchema = new mongoose.Schema({
     bio: {
         required: false,
         type: String,
+        default: null,
     },
     avatarImage: {
         required: false,
         type: String,
+        default: null,
     },
     password: {
         required: true,
         type: String,
+    },
+    refreshToken: {
+        required: false,
+        type: String,
+        default: null,
     }
 }, { timestamps: true, collection: 'Accounts' });
 

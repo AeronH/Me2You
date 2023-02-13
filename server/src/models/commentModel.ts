@@ -18,6 +18,7 @@ const commentSchema = new mongoose.Schema({
     likes: {
         required: true,
         type: Number,
+        default: 0,
     },
     postId: {
         required: true,

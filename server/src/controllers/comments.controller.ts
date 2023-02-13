@@ -1,9 +1,8 @@
-import express from 'express';
+import { Request, Response, NextFunction} from 'express';
 import commentModel from '../models/commentModel';
-import uniqid from 'uniqid';
 
 // gets all the comments for a post
-async function getAllComments(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function getAllComments(req: Request, res: Response, next: NextFunction) {
     const postId = req.body.postId;
 
     const data = await commentModel.find({ postId }).catch(next);
@@ -11,18 +10,16 @@ async function getAllComments(req: express.Request, res: express.Response, next:
 }
 
 // creates a comment for a post by id
-async function saveComment(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function saveComment(req: Request, res: Response, next: NextFunction) {
     const postId = req.body.postId;
     const commentBody = req.body.commentBody;
-    const username = req.body.username;
 
     const comment = new commentModel({
         commentBody: commentBody,
         createdBy: {
-            accountId: uniqid(),
-            username: username,
+            accountId: req.user.accountId,
+            username: req.user.username,
         },
-        likes: 0,
         postId: postId,
     });
 
@@ -31,7 +28,7 @@ async function saveComment(req: express.Request, res: express.Response, next: ex
 }
 
 // updates the 'likes' value of a comment (Increments by 1)
-async function likeComment(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function likeComment(req: Request, res: Response, next: NextFunction) {
     const commentId = req.body.commentId;
  
     await commentModel.findByIdAndUpdate(commentId, {$inc : { 'likes' : 1 }}).catch(next);

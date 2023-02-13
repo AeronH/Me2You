@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
-import express from 'express';
+import { Request, Response, NextFunction} from 'express';
 import accountModel from '../models/accountModel';
 import authTokenService from '../services/authToken.service'
 import bcrypt from 'bcryptjs'
 
-export async function login(req: express.Request, res: express.Response, next: express.NextFunction) {
+export async function login(req: Request, res: Response, next: NextFunction) {
     const { username, password } = req.body;
 
     const existingUser = await accountModel.findOne({ username }).catch(next);
@@ -14,27 +14,36 @@ export async function login(req: express.Request, res: express.Response, next: e
         return next(error);
     }
 
-    const token = authTokenService.generateToken({ 
+    const accessToken = authTokenService.generateAccessToken({ 
         username: existingUser.username,
         accountId: existingUser.id,
-     });
+    });
 
-    res.cookie("token", token, {
+    const refreshToken = authTokenService.generateRefreshToken({
+        username: existingUser.username,
+        accountId: existingUser.id,
+    });
+
+    await accountModel.findByIdAndUpdate(existingUser.id, { refreshToken });   
+
+    res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-    });    
+        maxAge: 24 * 60 * 60 * 1000,
+    });
 
     res.status(200).json({
         message: `Login with user '${username}' successful`,
+        accessToken
     });
 }
 
-// Currently clears the cookie jwt token.
-export async function logout(req:express.Request, res:express.Response, next: express.NextFunction) {
-    const token = req.cookies['token'];
-    if (token) {
-        jwt.sign(token, process.env.JWT_SECRET as string, { expiresIn: 1 }, (logout, error) => {
+// Clear header user on logout
+export async function logout(req: Request, res: Response, next: NextFunction) {
+    const accessToken = req.headers['authorization']?.split(' ')[1];
+    if (accessToken) {
+        jwt.sign(accessToken, process.env.JWT_ACCESS_TOKEN_SECRET as string, { expiresIn: 1 }, (logout, error) => {
             if (logout) {
-                res.status(200).clearCookie('token').json({ message: 'successfully logged out.'})
+                res.status(200).clearCookie('accessToken').json({ message: 'successfully logged out.'})
             } else {
                 next(error);
             }
@@ -45,7 +54,7 @@ export async function logout(req:express.Request, res:express.Response, next: ex
     }
 }
 
-export async function signUp(req: express.Request, res: express.Response, next: express.NextFunction) {
+export async function signUp(req: Request, res: Response, next: NextFunction) {
     const { username, password, confirmPassword } = req.body;
 
     const existingUser = await accountModel.findOne({ username }).catch(next);
@@ -60,28 +69,35 @@ export async function signUp(req: express.Request, res: express.Response, next: 
         return next(error);
     }
 
-    const encryptedPassword = await bcrypt.hash(password, 10);
+    const encryptedPassword = await bcrypt.hash(password, 10).catch(next);
 
     const newUser = new accountModel({ 
         username, 
         password: encryptedPassword,
-        bio: null,
-        avatarImage: null,
      });
+     
     await newUser.save().catch(next);
 
-    const token = authTokenService.generateToken({ 
+    const accessToken = authTokenService.generateAccessToken({ 
         username: newUser.username,
         accountId: newUser.id,
      });
 
-    res.cookie("token", token, {
+    const refreshToken = authTokenService.generateRefreshToken({
+        username: newUser.username,
+        accountId: newUser.id,
+    });
+
+    await accountModel.findByIdAndUpdate(newUser.id, { refreshToken }).catch(next);
+
+    res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({ 
         message: 'Successfully created account!',
-        data: { newUser },
+        accessToken,
     });
 }
 

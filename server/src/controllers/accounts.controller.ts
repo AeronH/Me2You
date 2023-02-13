@@ -1,8 +1,8 @@
-import express from "express";
+import { Request, Response, NextFunction} from "express";
 import accountModel from "../models/accountModel";
 
 // returns all the current registered accounts
-async function getAllAccounts(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function getAllAccounts(req: Request, res: Response, next: NextFunction) {
     const data = await accountModel.find().catch(next);
     res.status(200).json({
         message: 'Getting all accounts',
@@ -12,7 +12,7 @@ async function getAllAccounts(req: express.Request, res: express.Response, next:
     });
 }
 
-async function getSingleAccount(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function getSingleAccount(req: Request, res: Response, next: NextFunction) {
     const id = req.body.account_id;
     const account = await accountModel.findById(id).catch(next);
     res.status(200).json({

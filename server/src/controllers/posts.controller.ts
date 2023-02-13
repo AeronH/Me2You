@@ -1,16 +1,14 @@
-import express from 'express';
+import { Request, Response, NextFunction} from 'express';
 import postModel from '../models/postModel';
-import uniqid from 'uniqid';
 
 // Creates and adds a Post to the mongoDb Posts Collection
-async function createPost(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function createPost(req: Request, res: Response, next: NextFunction) {
     const post = new postModel({
         bodyText: req.body.bodyText,
         createdBy: {
-            accountId: uniqid(),
-            username: req.body.username,
+            accountId: req.user.accountId,
+            username: req.user.username,
         },
-        likes: 0
     });
 
     const dataToSave = await post.save().catch(next);
@@ -18,7 +16,7 @@ async function createPost(req: express.Request, res: express.Response, next: exp
 }
 
 // Gets all posts from the mongodB Posts Collection
-async function getAllPosts(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function getAllPosts(req: Request, res: Response, next: NextFunction) {
     const data = await postModel.find().catch(next);
     res.status(200).json({
         message: 'successfully retrieved all posts',
@@ -27,7 +25,7 @@ async function getAllPosts(req: express.Request, res: express.Response, next: ex
 }
 
 // gets a single post by the postId
-async function getSinglePost(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function getSinglePost(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     
     const data = await postModel.findById(id).catch(next);
@@ -35,7 +33,7 @@ async function getSinglePost(req: express.Request, res: express.Response, next: 
 }
 
 // deletes a post by the postId
-async function deletePost(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function deletePost(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
 
     await postModel.findByIdAndDelete(id).catch(next);
@@ -43,7 +41,7 @@ async function deletePost(req: express.Request, res: express.Response, next: exp
 }
 
 // updates the likes of a post (Increments by 1)
-async function likePost(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function likePost(req: Request, res: Response, next: NextFunction) {
     const postId = req.body.postId;
 
     await postModel.findByIdAndUpdate(postId, {$inc : { likes: 1 }}).catch(next);

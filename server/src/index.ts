@@ -1,5 +1,5 @@
 // import { config } from 'dotenv';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import dbService from './services/db.service';
 import bodyParser from 'body-parser'
 import cors from 'cors';
@@ -28,7 +28,7 @@ function startServer() {
 
     app.use('/api/', authTokenMiddleware.validateToken, mainRouter);
 
-    app.use('*', (req: express.Request, res: express.Response) => {
+    app.use('*', (req: Request, res: Response) => {
         res.status(301).redirect('/not-found');
     })
 
