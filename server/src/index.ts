@@ -32,6 +32,7 @@ function startServer() {
         res.status(301).redirect('/not-found');
     });
 
+    // ERROR HANDLER MIDDLEWARE, last middleware used
     app.use(errorMiddleware.errorHandler);
     
     app.listen(port, () => {

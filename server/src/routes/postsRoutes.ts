@@ -9,15 +9,16 @@ postsRouter.post('/', postsController.createPost);
 // Gets all of the posts.
 postsRouter.get('/all', postsController.getAllPosts);
 
-// Gets a single post by the post id
-postsRouter.get('/:id', postsController.getSinglePost);
-
 // Gets all the posts of an account
-postsRouter.get('/:account_id', );
+postsRouter.get('/accountPosts', postsController.getAllPostsForUser);
+
+postsRouter.put('/like', postsController.likePost);
+
+// Gets a single post by the post id, these two need to be at the bottom due to how routes work.
+postsRouter.get('/:id', postsController.getSinglePost);
 
 // deletes a post by the posts id
 postsRouter.delete('/:id', postsController.deletePost);
 
-postsRouter.put('/like', postsController.likePost);
 
 export default postsRouter;
