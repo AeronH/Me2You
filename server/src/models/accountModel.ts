@@ -23,6 +23,11 @@ const accountSchema = new mongoose.Schema({
         required: false,
         type: String,
         default: null,
+    },
+    likedPosts: {
+        required: true, 
+        type: Array, 
+        default: []
     }
 }, { timestamps: true, collection: 'Accounts' });
 

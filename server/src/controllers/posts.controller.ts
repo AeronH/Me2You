@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction} from 'express';
+import accountModel from '../models/accountModel';
 import postModel from '../models/postModel';
 
 // Creates and adds a Post to the mongoDb Posts Collection
@@ -34,6 +35,7 @@ async function getAllPosts(req: Request, res: Response, next: NextFunction) {
  
 }
 
+// Gets all the posts of a user 
 async function getAllPostsForUser(req: Request, res: Response, next: NextFunction) {
     const accountId = req.body.accountId;
     
@@ -75,7 +77,7 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
         if (deletedPost) {
             res.status(200).send(`Successfully deleted the post with the id ${id}`)
         } else {
-            res.status(204).send(`Could not delete post with the ID, ${id}`)
+            res.status(204).send(`Could not delete post with the id, ${id}`)
         }
     } catch (error) {
         next(error);
@@ -85,10 +87,33 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
 // updates the likes of a post (Increments by 1)
 async function likePost(req: Request, res: Response, next: NextFunction) {
     const postId = req.body.postId;
+    const userId = req.user.accountId;
 
     try {
-        await postModel.findByIdAndUpdate(postId, {$inc : { likes: 1 }});
-        res.status(200).send(`Successfully like post with id ${postId}`);
+        const user = await accountModel.findById(userId);
+        const usersLikedPosts = user?.likedPosts;
+        const postCurrentlyLiked = usersLikedPosts?.includes(postId);
+
+        // Dislikes post and removes from users likedPosts if post is already liked
+        if (postCurrentlyLiked) {
+            await postModel.findByIdAndUpdate(postId, { $inc : { likes: -1 }});
+
+            const newLikedPosts = usersLikedPosts;
+            newLikedPosts?.splice(newLikedPosts.indexOf(postId), 1);
+
+            await accountModel.findByIdAndUpdate(userId, { likedPosts: newLikedPosts });
+
+        // Liked post and adds post to users likedPosts if post isn't already liked
+        } else {
+            await postModel.findByIdAndUpdate(postId, { $inc: { likes: 1 }});
+
+            const newLikedPosts = usersLikedPosts;
+            newLikedPosts?.push(postId);
+
+            await accountModel.findByIdAndUpdate(userId, { likedPosts: newLikedPosts });
+        }
+
+        res.status(200).send(`Successfully ${postCurrentlyLiked ? 'disliked' : 'liked'} post with id ${postId}`);
     } catch (error) {
         next(error);
     }
