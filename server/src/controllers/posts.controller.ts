@@ -4,8 +4,9 @@ import postModel from '../models/postModel';
 
 // Creates and adds a Post to the mongoDb Posts Collection
 async function createPost(req: Request, res: Response, next: NextFunction) {
+    const bodyText = req.body.bodyText;
     const post = new postModel({
-        bodyText: req.body.bodyText,
+        bodyText,
         createdBy: {
             accountId: req.user.accountId,
             username: req.user.username,
@@ -51,7 +52,7 @@ async function getAllPostsForUser(req: Request, res: Response, next: NextFunctio
     }
 }
 
-// gets a single post by the postId
+// Gets a single post by the postId
 async function getSinglePost(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     try {
@@ -84,7 +85,7 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
     }
 }
 
-// updates the likes of a post (Increments by 1)
+// updates the likes of a post (Increments/Decrements by 1)
 async function likePost(req: Request, res: Response, next: NextFunction) {
     const postId = req.body.postId;
     const userId = req.user.accountId;
@@ -98,19 +99,17 @@ async function likePost(req: Request, res: Response, next: NextFunction) {
         if (postCurrentlyLiked) {
             await postModel.findByIdAndUpdate(postId, { $inc : { likes: -1 }});
 
-            const newLikedPosts = usersLikedPosts;
-            newLikedPosts?.splice(newLikedPosts.indexOf(postId), 1);
+            usersLikedPosts?.splice(usersLikedPosts.indexOf(postId), 1);
 
-            await accountModel.findByIdAndUpdate(userId, { likedPosts: newLikedPosts });
+            await accountModel.findByIdAndUpdate(userId, { likedPosts: usersLikedPosts });
 
         // Liked post and adds post to users likedPosts if post isn't already liked
         } else {
             await postModel.findByIdAndUpdate(postId, { $inc: { likes: 1 }});
 
-            const newLikedPosts = usersLikedPosts;
-            newLikedPosts?.push(postId);
+            usersLikedPosts?.push(postId);
 
-            await accountModel.findByIdAndUpdate(userId, { likedPosts: newLikedPosts });
+            await accountModel.findByIdAndUpdate(userId, { likedPosts: usersLikedPosts });
         }
 
         res.status(200).send(`Successfully ${postCurrentlyLiked ? 'disliked' : 'liked'} post with id ${postId}`);
