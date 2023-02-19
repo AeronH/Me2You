@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
-
-async function errorHandler(error: any, req: Request, res: Response, next: NextFunction) {
+async function errorHandler(
+    error: any,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
     if (!error.statusCode) error.statusCode = 500;
 
     if (error.statusCode === 302) {

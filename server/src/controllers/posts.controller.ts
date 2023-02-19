@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import accountModel from '../models/accountModel';
 import postModel from '../models/postModel';
 
@@ -19,7 +19,6 @@ async function createPost(req: Request, res: Response, next: NextFunction) {
     } catch (error) {
         next(error);
     }
-
 }
 
 // Gets all posts from the mongodB Posts Collection
@@ -33,21 +32,26 @@ async function getAllPosts(req: Request, res: Response, next: NextFunction) {
     } catch (error) {
         next(error);
     }
- 
 }
 
-// Gets all the posts of a user 
-async function getAllPostsForUser(req: Request, res: Response, next: NextFunction) {
+// Gets all the posts of a user
+async function getAllPostsForUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
     const accountId = req.body.accountId;
-    
+
     try {
-        const posts = await postModel.find({ 'createdBy.accountId': accountId });
-        
-        res.status(200).json({ 
+        const posts = await postModel.find({
+            'createdBy.accountId': accountId,
+        });
+
+        res.status(200).json({
             message: `Successfully got posts of user with id ${accountId}`,
             data: posts,
         });
-    } catch (error) {        
+    } catch (error) {
         next(error);
     }
 }
@@ -56,12 +60,14 @@ async function getAllPostsForUser(req: Request, res: Response, next: NextFunctio
 async function getSinglePost(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     try {
-        const data = await postModel.findById(id);   
+        const data = await postModel.findById(id);
         console.log(data, 'single post');
         if (data) {
             res.status(200).json(data);
         } else {
-            res.status(204).json({ message: `post with the id ${id} not found.`});
+            res.status(204).json({
+                message: `post with the id ${id} not found.`,
+            });
         }
     } catch (error) {
         next(error);
@@ -76,9 +82,11 @@ async function deletePost(req: Request, res: Response, next: NextFunction) {
         const deletedPost = await postModel.findByIdAndDelete(id);
         console.log(deletedPost);
         if (deletedPost) {
-            res.status(200).send(`Successfully deleted the post with the id ${id}`)
+            res.status(200).send(
+                `Successfully deleted the post with the id ${id}`
+            );
         } else {
-            res.status(204).send(`Could not delete post with the id, ${id}`)
+            res.status(204).send(`Could not delete post with the id, ${id}`);
         }
     } catch (error) {
         next(error);
@@ -97,25 +105,40 @@ async function likePost(req: Request, res: Response, next: NextFunction) {
 
         // Dislikes post and removes from users likedPosts if post is already liked
         if (postCurrentlyLiked) {
-            await postModel.findByIdAndUpdate(postId, { $inc : { likes: -1 }});
+            await postModel.findByIdAndUpdate(postId, { $inc: { likes: -1 } });
 
             usersLikedPosts?.splice(usersLikedPosts.indexOf(postId), 1);
 
-            await accountModel.findByIdAndUpdate(userId, { likedPosts: usersLikedPosts });
+            await accountModel.findByIdAndUpdate(userId, {
+                likedPosts: usersLikedPosts,
+            });
 
-        // Liked post and adds post to users likedPosts if post isn't already liked
+            // Liked post and adds post to users likedPosts if post isn't already liked
         } else {
-            await postModel.findByIdAndUpdate(postId, { $inc: { likes: 1 }});
+            await postModel.findByIdAndUpdate(postId, { $inc: { likes: 1 } });
 
             usersLikedPosts?.push(postId);
 
-            await accountModel.findByIdAndUpdate(userId, { likedPosts: usersLikedPosts });
+            await accountModel.findByIdAndUpdate(userId, {
+                likedPosts: usersLikedPosts,
+            });
         }
 
-        res.status(200).send(`Successfully ${postCurrentlyLiked ? 'disliked' : 'liked'} post with id ${postId}`);
+        res.status(200).send(
+            `Successfully ${
+                postCurrentlyLiked ? 'disliked' : 'liked'
+            } post with id ${postId}`
+        );
     } catch (error) {
         next(error);
     }
 }
 
-export default { createPost, getAllPosts, getAllPostsForUser, getSinglePost, deletePost, likePost }
+export default {
+    createPost,
+    getAllPosts,
+    getAllPostsForUser,
+    getSinglePost,
+    deletePost,
+    likePost,
+};

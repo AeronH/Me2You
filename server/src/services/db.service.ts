@@ -9,13 +9,13 @@ function connectToMongoDB() {
 
     database.on('error', (error) => {
         console.log(`Error connection to Database: ${error}`);
-    })
+    });
 
     database.once('connected', () => {
         console.log('Successfully connected to Database');
-    })
+    });
 
     return database;
 }
 
-export default { connectToMongoDB }
+export default { connectToMongoDB };

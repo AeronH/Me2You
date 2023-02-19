@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction} from "express";
-import accountModel from "../models/accountModel";
+import { Request, Response, NextFunction } from 'express';
+import accountModel from '../models/accountModel';
 
 // returns all the current registered accounts
 async function getAllAccounts(req: Request, res: Response, next: NextFunction) {
@@ -9,15 +9,18 @@ async function getAllAccounts(req: Request, res: Response, next: NextFunction) {
             message: 'Getting all accounts',
             data: {
                 users: data,
-            }
+            },
         });
     } catch (error) {
         next(error);
     }
-   
 }
 
-async function getSingleAccount(req: Request, res: Response, next: NextFunction) {
+async function getSingleAccount(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
     const id = req.body.account_id;
 
     try {
@@ -34,7 +37,6 @@ async function getSingleAccount(req: Request, res: Response, next: NextFunction)
     } catch (error) {
         next(error);
     }
-    
 }
 
-export default { getAllAccounts, getSingleAccount }
+export default { getAllAccounts, getSingleAccount };

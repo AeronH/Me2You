@@ -1,35 +1,40 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const commentSchema = new mongoose.Schema({
-    commentBody: {
-        required: true,
-        type: String,
-    },
-    createdBy: {
-        accountId: {
+const commentSchema = new mongoose.Schema(
+    {
+        commentBody: {
             required: true,
             type: String,
         },
-        username: {
+        createdBy: {
+            accountId: {
+                required: true,
+                type: String,
+            },
+            username: {
+                required: true,
+                type: String,
+            },
+        },
+        likes: {
+            required: true,
+            type: Number,
+            default: 0,
+        },
+        postId: {
             required: true,
             type: String,
-        }
+        },
     },
-    likes: {
-        required: true,
-        type: Number,
-        default: 0,
-    },
-    postId: {
-        required: true,
-        type: String,
-    }
-}, { timestamps: true, collection: 'Comments' });
+    { timestamps: true, collection: 'Comments' }
+);
 
 commentSchema.set('toJSON', {
     virtuals: true,
-    versionKey:false,
-    transform: function (doc, ret) {   delete ret._id  }
-  });
+    versionKey: false,
+    transform: function (doc, ret) {
+        delete ret._id;
+    },
+});
 
 export default mongoose.model('Comment', commentSchema);

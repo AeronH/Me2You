@@ -1,31 +1,31 @@
-import { Document } from "mongoose"
-import { Request } from 'express'
+import { Document } from 'mongoose';
+import { Request } from 'express';
 
 declare global {
-    namespace Express { 
+    namespace Express {
         export interface Request {
-            user: any
+            user: any;
         }
         export interface Response {
-            user: any
+            user: any;
         }
     }
 }
 
 export default interface Post {
-    bodyText: string,
+    bodyText: string;
     createdBy: {
-        accountId: string,
-        username: string,
-    }
-    likes: number,
+        accountId: string;
+        username: string;
+    };
+    likes: number;
 }
 
 export default interface Account {
-    username: string,
-    bio: string,
-    avatarImage: string,
-    password: string,
+    username: string;
+    bio: string;
+    avatarImage: string;
+    password: string;
 }
 
 export default interface IGetUserAuthInfoRequest extends Request {
@@ -34,4 +34,3 @@ export default interface IGetUserAuthInfoRequest extends Request {
         accountId?: string;
     };
 }
-

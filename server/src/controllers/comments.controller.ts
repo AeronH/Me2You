@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import commentModel from '../models/commentModel';
 
 // gets all the comments for a post
@@ -11,7 +11,6 @@ async function getAllComments(req: Request, res: Response, next: NextFunction) {
     } catch (error) {
         next(error);
     }
-   
 }
 
 // creates a comment for a post by id
@@ -34,20 +33,18 @@ async function saveComment(req: Request, res: Response, next: NextFunction) {
     } catch (error) {
         next(error);
     }
-    
 }
 
 // updates the 'likes' value of a comment (Increments by 1)
 async function likeComment(req: Request, res: Response, next: NextFunction) {
     const commentId = req.body.commentId;
- 
+
     try {
-        await commentModel.findByIdAndUpdate(commentId, {$inc : { 'likes' : 1 }});
+        await commentModel.findByIdAndUpdate(commentId, { $inc: { likes: 1 } });
         res.status(200).send(`Successfully liked post with id ${commentId}`);
     } catch (error) {
         next(error);
     }
-    
 }
 
-export default { getAllComments, saveComment, likeComment }
+export default { getAllComments, saveComment, likeComment };
