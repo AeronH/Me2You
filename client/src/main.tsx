@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Root from './routes/Root';
@@ -9,6 +8,7 @@ import PostPage from './routes/postPage';
 import AccountPage from './routes/AccountPage';
 import HomePage from './routes/homePage';
 import ExplorePage from './routes/explorePage';
+import SettingsPage from './routes/settingsPage';
 
 const router = createBrowserRouter([
     {
@@ -21,16 +21,20 @@ const router = createBrowserRouter([
                 element: <HomePage />,
             },
             {
-                path: 'post/:postId',
+                path: '/post/:postId',
                 element: <PostPage />,
             },
             {
-                path: 'account/:accountId',
+                path: '/accounts',
                 element: <AccountPage />,
             },
             {
                 path: '/explore',
                 element: <ExplorePage />,
+            },
+            {
+                path: '/settings',
+                element: <SettingsPage />,
             },
         ],
     },

@@ -1,6 +1,7 @@
 import TwitterLogo from '../assets/Twitter-logo.svg.png';
 import {
     Avatar,
+    Button,
     List,
     ListItem,
     ListItemIcon,
@@ -20,6 +21,8 @@ function SideBar() {
         { label: 'Accounts', icon: <GroupIcon /> },
         { label: 'Settings', icon: <SettingsIcon /> },
     ];
+
+    const isSignedIn = true;
 
     return (
         <div className="p-5 flex flex-col justify-between h-screen w-60">
@@ -51,10 +54,14 @@ function SideBar() {
                     </List>
                 </section>
             </div>
-            <div className="flex justify-between items-center">
-                <Avatar alt="Users avatar Image" />
-                <h2 className="font-semibold">Username goes here</h2>
-            </div>
+            {!isSignedIn ? (
+                <Button variant="outlined">Log In </Button>
+            ) : (
+                <div className="flex justify-between items-center">
+                    <Avatar alt="Users avatar Image" />
+                    <h2 className="font-semibold">Username goes here</h2>
+                </div>
+            )}
         </div>
     );
 }

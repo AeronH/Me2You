@@ -1,9 +1,5 @@
-import React from 'react'
-
 function AccountPage() {
-  return (
-    <div>accountPage</div>
-  )
+    return <div>accounts Page</div>;
 }
 
-export default AccountPage
+export default AccountPage;
