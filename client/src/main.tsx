@@ -9,8 +9,14 @@ import AccountPage from './routes/AccountPage';
 import HomePage from './routes/homePage';
 import ExplorePage from './routes/explorePage';
 import SettingsPage from './routes/settingsPage';
+import LoginPage from './routes/loginPage';
+import PostService from './services/posts.service';
 
 const router = createBrowserRouter([
+    {
+        path: '/login',
+        element: <LoginPage />,
+    },
     {
         path: '/',
         element: <Root />,
@@ -23,6 +29,9 @@ const router = createBrowserRouter([
             {
                 path: '/post/:postId',
                 element: <PostPage />,
+                id: 'post',
+                loader: ({ params }) =>
+                    PostService.getPostById(params.postId as string),
             },
             {
                 path: '/accounts',
