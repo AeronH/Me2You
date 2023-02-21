@@ -1,4 +1,5 @@
 import axios from 'axios';
+import authHeader from './auth-header';
 
 const baseUrl = 'http://localhost:3080/auth';
 
@@ -10,8 +11,6 @@ class AuthService {
                 password,
             });
 
-            console.log(response);
-
             const accessToken = response.data.accessToken;
             localStorage.setItem('token', accessToken);
 
@@ -21,11 +20,25 @@ class AuthService {
             };
         } catch (err: any) {
             console.log(err);
-            return err.response.data.message;
+            return { isSuccessful: false, message: 'There was an error' };
         }
     }
 
-    async logout() {}
+    async getLoggedInUserDetails() {
+        try {
+            const response = await axios.get(`${baseUrl}/currentUser`, {
+                headers: authHeader(),
+            });
+
+            return response.data;
+        } catch (err: any) {
+            console.log(err);
+        }
+    }
+
+    async logout() {
+        localStorage.removeItem('token');
+    }
 
     async register() {}
 }

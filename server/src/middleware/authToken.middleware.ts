@@ -21,7 +21,7 @@ async function validateToken(req: Request, res: Response, next: NextFunction) {
         req.user = { username, accountId };
         next();
     } catch (error) {
-        return res.status(403).json({ message: 'Access Token not validated.' });
+        return res.status(401).json({ message: 'Access Token not validated.' });
     }
 }
 

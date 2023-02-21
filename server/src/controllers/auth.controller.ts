@@ -47,6 +47,33 @@ class AuthController {
         }
     }
 
+    async refreshToken(req: Request, res: Response, next: NextFunction) {
+        const refreshToken = req.cookies?.refresh;
+
+        if (refreshToken) {
+            jwt.verify(
+                refreshToken,
+                process.env.JWT_REFRESH_TOKEN_SECRET as string,
+                (err: any, decoded: any) => {
+                    if (err) {
+                        return res
+                            .status(406)
+                            .json({ message: 'unauthorized access' });
+                    } else {
+                        const accessToken =
+                            authTokenService.generateAccessToken({
+                                username: decoded.username,
+                                accountId: decoded.accountID,
+                            });
+                        return res.json({ accessToken });
+                    }
+                }
+            );
+        } else {
+            return res.status(406).json({ message: 'unauthorized access' });
+        }
+    }
+
     async logout(req: Request, res: Response, next: NextFunction) {
         const accessToken = req.headers['authorization']?.split(' ')[1];
         if (accessToken) {
@@ -59,6 +86,7 @@ class AuthController {
                         // Redirect to login page on successful logout
                         res.status(200)
                             .clearCookie('accessToken')
+                            .clearCookie('refreshToken')
                             .json({ message: 'successfully logged out.' });
                     } else {
                         next(error);
@@ -109,23 +137,6 @@ class AuthController {
 
             await newUser.save().catch(next);
 
-            // const accessToken = authTokenService.generateAccessToken({
-            //     username: newUser.username,
-            //     accountId: newUser.id,
-            // });
-
-            // const refreshToken = authTokenService.generateRefreshToken({
-            //     username: newUser.username,
-            //     accountId: newUser.id,
-            // });
-
-            // await accountModel.findByIdAndUpdate(newUser.id, { refreshToken }).catch(next);
-
-            // res.cookie("refreshToken", refreshToken, {
-            //     httpOnly: true,
-            //     maxAge: 24 * 60 * 60 * 1000,
-            // });
-
             res.status(200).json({
                 message: `Successfully created the account ${username}!`,
             });
@@ -133,8 +144,30 @@ class AuthController {
             next(error);
         }
     }
-}
 
-// Clear header user on logout
+    async getCurrentUserDetails(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) {
+        const currentUserId = req.user.accountId;
+        try {
+            const currentUser = await accountModel.findById(currentUserId);
+            if (currentUser) {
+                res.status(200).json({
+                    username: currentUser.username,
+                    bio: currentUser.bio,
+                    avatarImage: currentUser.avatarImage,
+                    accountId: currentUser.id,
+                    likedPosts: currentUser.likedPosts,
+                });
+            } else {
+                res.status(401).json({ message: 'User not found' });
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+}
 
 export default new AuthController();

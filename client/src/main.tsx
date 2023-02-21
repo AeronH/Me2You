@@ -25,6 +25,8 @@ const router = createBrowserRouter([
             {
                 path: '/home',
                 element: <HomePage />,
+                id: 'home',
+                loader: () => PostService.getAllPosts(),
             },
             {
                 path: '/post/:postId',

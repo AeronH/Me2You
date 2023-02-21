@@ -7,14 +7,23 @@ import {
     ListItemIcon,
     ListItemButton,
     ListItemText,
+    Menu,
+    MenuItem,
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import TagIcon from '@mui/icons-material/Tag';
 import GroupIcon from '@mui/icons-material/Group';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { NavLink, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import authService from '../services/auth.service';
+import { User } from '../utils/types';
 
 function SideBar() {
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+
     const sidebarOptions = [
         { label: 'Home', icon: <HomeIcon /> },
         { label: 'Explore', icon: <TagIcon /> },
@@ -22,10 +31,26 @@ function SideBar() {
         { label: 'Settings', icon: <SettingsIcon /> },
     ];
 
-    const isSignedIn = true;
+    function toggleUserDropdown(event: React.MouseEvent<HTMLElement>) {
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleClose() {
+        setAnchorEl(null);
+    }
+
+    async function onLogout() {
+        await authService.logout();
+    }
+
+    useEffect(() => {
+        (async () => {
+            setCurrentUser(await authService.getLoggedInUserDetails());
+        })();
+    }, []);
 
     return (
-        <div className="p-5 flex flex-col justify-between h-screen w-60">
+        <div className="p-5 flex flex-col justify-between h-screen w-60 fixed">
             <div>
                 <Link to="Home">
                     <section className="flex justify-around items-center cursor-pointer">
@@ -54,12 +79,60 @@ function SideBar() {
                     </List>
                 </section>
             </div>
-            {!isSignedIn ? (
-                <Button variant="outlined">Log In </Button>
+
+            {!currentUser ? (
+                <Link to="login">
+                    <Button variant="outlined" className="w-full">
+                        Log In{' '}
+                    </Button>
+                </Link>
             ) : (
-                <div className="flex justify-between items-center">
-                    <Avatar alt="Users avatar Image" />
-                    <h2 className="font-semibold">Username goes here</h2>
+                <div>
+                    <div
+                        className="flex justify-start gap-4 items-center hover:bg-slate-100 px-4 py-2 rounded-full cursor-pointer"
+                        onClick={toggleUserDropdown}
+                    >
+                        <Avatar alt="Users avatar Image" />
+                        <h2 className="font-semibold">
+                            @{currentUser.username}
+                        </h2>
+                    </div>
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        onClick={handleClose}
+                        PaperProps={{
+                            elevation: 0,
+                            sx: {
+                                overflow: 'visible',
+                                filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                                mb: 1.5,
+                                '&:before': {
+                                    content: '""',
+                                    display: 'block',
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    right: 40,
+                                    width: 10,
+                                    height: 10,
+                                    bgcolor: 'background.paper',
+                                    transform: 'translateY(50%) rotate(45deg)',
+                                    zIndex: 0,
+                                },
+                            },
+                        }}
+                        anchorOrigin={{
+                            horizontal: 'center',
+                            vertical: 'top',
+                        }}
+                        transformOrigin={{
+                            horizontal: 'center',
+                            vertical: 'bottom',
+                        }}
+                    >
+                        <MenuItem onClick={onLogout}>Log Out</MenuItem>
+                    </Menu>
                 </div>
             )}
         </div>

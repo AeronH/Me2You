@@ -5,19 +5,23 @@ import postModel from '../models/postModel';
 class PostsController {
     async createPost(req: Request, res: Response, next: NextFunction) {
         const bodyText = req.body.bodyText;
-        const post = new postModel({
-            bodyText,
-            createdBy: {
-                accountId: req.user.accountId,
-                username: req.user.username,
-            },
-        });
+        if (req.user) {
+            const post = new postModel({
+                bodyText,
+                createdBy: {
+                    accountId: req.user.accountId,
+                    username: req.user.username,
+                },
+            });
 
-        try {
-            const dataToSave = await post.save();
-            res.status(200).json(dataToSave);
-        } catch (error) {
-            next(error);
+            try {
+                const dataToSave = await post.save();
+                res.status(200).json(dataToSave);
+            } catch (error) {
+                next(error);
+            }
+        } else {
+            res.status(400).json({ message: 'You must be logged in to post.' });
         }
     }
 

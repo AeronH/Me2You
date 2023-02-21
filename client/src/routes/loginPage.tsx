@@ -19,7 +19,7 @@ function LoginPage() {
             setLoginError('');
             navigate('/home');
         } else {
-            setLoginError(loginResponse);
+            setLoginError(loginResponse.message);
         }
     }
 

@@ -26,7 +26,7 @@ function startServer() {
 
     app.use('/auth/', authRouter);
 
-    app.use('/api/', authTokenMiddleware.validateToken, mainRouter);
+    app.use('/api/', mainRouter);
 
     app.use('*', (req: Request, res: Response) => {
         res.status(301).redirect('/not-found');
