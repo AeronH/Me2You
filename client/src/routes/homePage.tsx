@@ -24,18 +24,20 @@ function homePage() {
         })();
     }, []);
     return (
-        <main className="p-10 ml-60 flex flex-col items-center w-full">
+        <main className="p-10 ml-60 flex flex-col items-center w-full border">
             <section className="w-full flex justify-center mb-10 gap-4">
                 <TextField
                     placeholder="Create a post"
                     value={newPost}
                     onChange={(e) => setNewPost(e.target.value)}
+                    variant="standard"
+                    fullWidth
                 />
                 <Button variant="contained" onClick={submitPost}>
                     Post
                 </Button>
             </section>
-            <section className="flex flex-col gap-4 h-fit">
+            <section className="flex flex-col gap-2 h-fit">
                 {postIds?.map((postId, index) => (
                     <PostCard key={index} postId={postId} />
                 ))}

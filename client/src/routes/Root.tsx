@@ -19,7 +19,7 @@ function Root() {
         })();
     }, []);
     return (
-        <div className="max-w-6xl mx-auto flex">
+        <div className="max-w-4xl mx-auto flex">
             <SideBar />
             <Outlet />
         </div>

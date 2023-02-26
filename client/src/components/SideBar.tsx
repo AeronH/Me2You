@@ -76,13 +76,13 @@ function SideBar() {
         <div className="p-5 flex flex-col justify-between h-screen w-60 fixed">
             <div>
                 <Link to="Home">
-                    <section className="flex justify-around items-center cursor-pointer">
+                    <section className="flex justify-start items-center cursor-pointer">
                         <img
                             src={TwitterLogo}
                             alt="This is the logo"
-                            className="h-10"
+                            className="h-6 ml-8"
                         />
-                        <h2 className="text-xl">Twotter</h2>
+                        {/* <h2 className="text-xl">Twotter</h2> */}
                     </section>
                 </Link>
                 <section className="h-fit w-full">

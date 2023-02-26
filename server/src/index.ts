@@ -1,4 +1,3 @@
-// import { config } from 'dotenv';
 import express, { Request, Response } from 'express';
 import dbService from './services/db.service';
 import bodyParser from 'body-parser';
@@ -8,7 +7,6 @@ import mainRouter from './routes/routes';
 import path from 'path';
 import { config } from 'dotenv';
 import errorMiddleware from './middleware/error.middleware';
-import authTokenMiddleware from './middleware/authToken.middleware';
 import authRouter from './routes/authRoutes';
 
 config({ path: path.resolve(__dirname, '../../.env') });
