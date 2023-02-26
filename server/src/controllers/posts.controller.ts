@@ -125,11 +125,12 @@ class PostsController {
                 });
             }
 
-            res.status(200).send(
-                `Successfully ${
+            res.status(200).json({
+                message: `Successfully ${
                     postCurrentlyLiked ? 'disliked' : 'liked'
-                } post with id ${postId}`
-            );
+                } post with id ${postId}`,
+                likedPosts: usersLikedPosts,
+            });
         } catch (error) {
             next(error);
         }

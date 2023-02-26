@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 function generateAccessToken(value: any) {
     return jwt.sign(value, process.env.JWT_ACCESS_TOKEN_SECRET as string, {
-        expiresIn: '30s',
+        expiresIn: '900s',
     });
 }
 

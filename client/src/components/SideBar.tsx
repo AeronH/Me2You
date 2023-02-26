@@ -18,10 +18,27 @@ import { NavLink, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import authService from '../services/auth.service';
 import { User } from '../utils/types';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../redux/store';
+import {
+    clearCurrentUser,
+    setCurrentUser,
+    setLikedPosts,
+} from '../redux/userSlice';
 
 function SideBar() {
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const dispatch = useDispatch();
+
+    // Redux state
+    const isLoggedIn = useSelector(
+        (state: RootState) => state.currentUser.isLoggedIn
+    );
+    const currentUser: User | null = useSelector(
+        (state: RootState) => state.currentUser.currentUser
+    );
+
     const open = Boolean(anchorEl);
 
     const sidebarOptions = [
@@ -41,13 +58,19 @@ function SideBar() {
 
     async function onLogout() {
         await authService.logout();
+        dispatch(clearCurrentUser());
     }
 
-    useEffect(() => {
-        (async () => {
-            setCurrentUser(await authService.getLoggedInUserDetails());
-        })();
-    }, []);
+    // useEffect(() => {
+    //     (async () => {
+    //         const loggedInUser = await authService.getLoggedInUserDetails();
+
+    //         if (loggedInUser) {
+    //             dispatch(setCurrentUser(loggedInUser));
+    //             dispatch(setLikedPosts(loggedInUser.likedPosts));
+    //         }
+    //     })();
+    // }, []);
 
     return (
         <div className="p-5 flex flex-col justify-between h-screen w-60 fixed">
@@ -80,7 +103,7 @@ function SideBar() {
                 </section>
             </div>
 
-            {!currentUser ? (
+            {!isLoggedIn ? (
                 <Link to="login">
                     <Button variant="outlined" className="w-full">
                         Log In{' '}
@@ -94,7 +117,7 @@ function SideBar() {
                     >
                         <Avatar alt="Users avatar Image" />
                         <h2 className="font-semibold">
-                            @{currentUser.username}
+                            @{currentUser?.username}
                         </h2>
                     </div>
                     <Menu

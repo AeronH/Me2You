@@ -17,6 +17,7 @@ class AuthService {
             return {
                 isSuccessful: true,
                 message: response.data.message,
+                user: response.data.user,
             };
         } catch (err: any) {
             console.log(err);
@@ -33,6 +34,7 @@ class AuthService {
             return response.data;
         } catch (err: any) {
             console.log(err);
+            return null;
         }
     }
 

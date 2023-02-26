@@ -29,6 +29,7 @@ class AuthController {
                 accountId: existingUser.id,
             });
 
+            // Sets their refresh token in the db, may end up changing the whole refresh token logic soon.
             await accountModel.findByIdAndUpdate(existingUser.id, {
                 refreshToken,
             });
@@ -41,6 +42,13 @@ class AuthController {
             res.status(200).json({
                 message: `Login with user '${username}' successful`,
                 accessToken,
+                user: {
+                    accountId: existingUser.id,
+                    username: existingUser.username,
+                    avatarImg: existingUser.avatarImage,
+                    bio: existingUser.bio,
+                    likedPosts: existingUser.likedPosts,
+                },
             });
         } catch (error) {
             next(error);

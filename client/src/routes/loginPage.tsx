@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import AuthService from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setCurrentUser } from '../redux/userSlice';
 
 function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState<string>('');
+
+    const dispatch = useDispatch();
 
     const navigate = useNavigate();
 
@@ -17,6 +21,7 @@ function LoginPage() {
 
         if (loginResponse.isSuccessful) {
             setLoginError('');
+            // dispatch(setCurrentUser(loginResponse.user));
             navigate('/home');
         } else {
             setLoginError(loginResponse.message);

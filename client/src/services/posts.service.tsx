@@ -34,9 +34,27 @@ class PostService {
             return response;
         } catch (err: any) {
             if (err.response.status === 401) {
+                // If fails because token isn't validated, attempts to get a new access token
                 const accessToken = await axios.post(`${baseUrl}/auth/refresh`);
-                console.log(accessToken);
+                if (accessToken) {
+                    localStorage.setItem('token', accessToken.data);
+                    this.createNewPost(post);
+                }
             }
+        }
+    }
+
+    async likePost(id: string) {
+        try {
+            const response = await axios.put(
+                `${baseUrl}/api/posts/like`,
+                { postId: id },
+                { headers: authHeader() }
+            );
+            return response.data;
+        } catch (err: any) {
+            console.log(err);
+            return null;
         }
     }
 }
