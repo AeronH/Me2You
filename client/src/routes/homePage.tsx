@@ -5,7 +5,7 @@ import { Button, TextField } from '@mui/material';
 import PostsService from '../services/posts.service';
 
 function homePage() {
-    const [posts, setPosts] = useState<Post[]>();
+    const [postIds, setPostIds] = useState<Post[]>();
 
     const [newPost, setNewPost] = useState('');
 
@@ -19,8 +19,8 @@ function homePage() {
 
     useEffect(() => {
         (async () => {
-            const posts = await PostsService.getAllPosts();
-            setPosts(posts);
+            const postIds = await PostsService.getAllPostIds();
+            setPostIds(postIds);
         })();
     }, []);
     return (
@@ -36,8 +36,8 @@ function homePage() {
                 </Button>
             </section>
             <section className="flex flex-col gap-4 h-fit">
-                {posts?.map((post) => (
-                    <PostCard key={post.id} post={post} />
+                {postIds?.map((postId, index) => (
+                    <PostCard key={index} postId={postId} />
                 ))}
             </section>
         </main>

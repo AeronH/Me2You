@@ -5,7 +5,7 @@ import { RootState } from '../redux/store';
 import { User } from '../utils/types';
 import { useEffect } from 'react';
 import authService from '../services/auth.service';
-import { setCurrentUser, setLikedPosts } from '../redux/userSlice';
+import { setCurrentUser } from '../redux/userSlice';
 
 function Root() {
     const dispatch = useDispatch();
@@ -15,7 +15,6 @@ function Root() {
             const userDetails = await authService.getLoggedInUserDetails();
             if (userDetails) {
                 dispatch(setCurrentUser(userDetails));
-                dispatch(setLikedPosts(userDetails.likedPosts));
             }
         })();
     }, []);

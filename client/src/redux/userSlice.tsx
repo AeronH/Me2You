@@ -5,7 +5,6 @@ const userSlice = createSlice({
     initialState: {
         isLoggedIn: false,
         currentUser: null,
-        likedPosts: [],
     },
     reducers: {
         setCurrentUser(state, action) {
@@ -16,12 +15,8 @@ const userSlice = createSlice({
             state.isLoggedIn = false;
             state.currentUser = null;
         },
-        setLikedPosts(state, action) {
-            state.likedPosts = action.payload;
-        },
     },
 });
 
-export const { setCurrentUser, clearCurrentUser, setLikedPosts } =
-    userSlice.actions;
+export const { setCurrentUser, clearCurrentUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -25,12 +25,13 @@ class PostsController {
         }
     }
 
-    async getAllPosts(req: Request, res: Response, next: NextFunction) {
+    async getAllPostIds(req: Request, res: Response, next: NextFunction) {
         try {
             const data = await postModel.find();
+            const postIds = data.map((post) => post.id);
             res.status(200).json({
                 message: 'successfully retrieved all posts',
-                data: data,
+                data: postIds,
             });
         } catch (error) {
             next(error);
@@ -58,7 +59,6 @@ class PostsController {
         const id = req.params.id;
         try {
             const data = await postModel.findById(id);
-            console.log(data, 'single post');
             if (data) {
                 res.status(200).json(data);
             } else {
@@ -76,7 +76,6 @@ class PostsController {
 
         try {
             const deletedPost = await postModel.findByIdAndDelete(id);
-            console.log(deletedPost);
             if (deletedPost) {
                 res.status(200).send(
                     `Successfully deleted the post with the id ${id}`
@@ -131,6 +130,24 @@ class PostsController {
                 } post with id ${postId}`,
                 likedPosts: usersLikedPosts,
             });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async isPostLiked(req: Request, res: Response, next: NextFunction) {
+        const userId = req.user.accountId;
+        const postId = req.params.id;
+
+        try {
+            const currentUser = await accountModel.findById(userId);
+            if (currentUser) {
+                if (currentUser.likedPosts.includes(postId)) {
+                    res.status(200).json({ isPostLiked: true });
+                } else {
+                    res.status(200).json({ isPostLiked: false });
+                }
+            }
         } catch (error) {
             next(error);
         }

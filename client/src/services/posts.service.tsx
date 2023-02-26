@@ -5,7 +5,7 @@ import authHeader from './auth-header';
 const baseUrl = 'http://localhost:3080';
 
 class PostService {
-    async getAllPosts() {
+    async getAllPostIds() {
         const response = await axios.get(`${baseUrl}/api/posts/all`);
 
         return response.data.data as Post[];
@@ -55,6 +55,19 @@ class PostService {
         } catch (err: any) {
             console.log(err);
             return null;
+        }
+    }
+
+    async isPostLiked(id: string) {
+        try {
+            const response = await axios.get(
+                `${baseUrl}/api/posts/isLiked/${id}`,
+                { headers: authHeader() }
+            );
+            return response.data.isPostLiked;
+        } catch (err: any) {
+            console.log(err);
+            return false;
         }
     }
 }

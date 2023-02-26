@@ -12,7 +12,7 @@ postsRouter.post(
 );
 
 // Gets all of the posts.
-postsRouter.get('/all', PostsController.getAllPosts);
+postsRouter.get('/all', PostsController.getAllPostIds);
 
 // Gets all the posts of an account
 postsRouter.get('/accountPosts', PostsController.getAllPostsForUser);
@@ -21,6 +21,12 @@ postsRouter.put(
     '/like',
     authTokenMiddleware.validateToken,
     PostsController.likePost
+);
+
+postsRouter.get(
+    '/isLiked/:id',
+    authTokenMiddleware.validateToken,
+    PostsController.isPostLiked
 );
 
 // Gets a single post by the post id, these two need to be at the bottom due to how routes work.
